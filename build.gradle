@@ -1,0 +1,86 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+group = 'com.github.jneat'
+version = '0.5'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    runtime 'org.mybatis:mybatis:3.3.0'
+    
+    testCompile 'org.mybatis:mybatis:3.3.0'
+    testCompile 'org.testng:testng:6.14.2'
+    testCompile 'org.assertj:assertj-core:3.4.1'
+    testCompile 'org.postgresql:postgresql:42.2.1'
+    testCompile 'org.projectlombok:lombok:1.16.20'
+    testCompile 'com.github.jneat:jneat:0.3'
+}
+
+test {
+    useTestNG()
+    
+    testLogging.showStandardStreams = true
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
+}
+
+//Include runtime for compilation
+sourceSets.main.compileClasspath += configurations.runtime
+javadoc.classpath += configurations.runtime
+
+buildscript {
+    repositories {
+		mavenCentral()
+    }
+    dependencies {
+        classpath 'org.mybatis:mybatis:3.3.0'
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        mavenJar(MavenPublication) {
+            from components.java
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+        }
+    }
+}
+
+// Tasks
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}

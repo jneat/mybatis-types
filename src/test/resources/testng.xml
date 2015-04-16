@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+ 
+<suite name="PG" verbose="1">
+    <package name="com.github.jneat.mybatis">
+        <include >
+            <class name="com.github.jneat.mybatis.PostgresqlSuite" />
+        </include>
+    </package>
+</suite>
