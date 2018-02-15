@@ -33,6 +33,13 @@ import org.apache.ibatis.type.MappedTypes;
 @MappedTypes(Boolean[].class)
 public class ArrayBooleanTypeHandler extends ArrayTypeHandler<Boolean[]> {
 
+    private static final Boolean[] EMPTY = new Boolean[0];
+
+    @Override
+    protected Boolean[] empty() {
+        return EMPTY;
+    }
+
     @Override
     protected String getDbTypeName(Connection connection) throws SQLException {
         // Now support only PostgreSQL types

@@ -32,6 +32,13 @@ import org.apache.ibatis.type.MappedTypes;
 @MappedTypes(Long[].class)
 public class ArrayLongTypeHandler extends ArrayTypeHandler<Long[]> {
 
+    private static final Long[] EMPTY = new Long[0];
+
+    @Override
+    protected Long[] empty() {
+        return EMPTY;
+    }
+
     @Override
     protected String getDbTypeName(Connection connection) {
         // Now support only PostgreSQL types

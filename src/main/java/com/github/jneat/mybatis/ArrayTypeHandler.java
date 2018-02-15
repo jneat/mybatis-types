@@ -23,7 +23,6 @@
  */
 package com.github.jneat.mybatis;
 
-import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
 import java.sql.Array;
@@ -35,14 +34,14 @@ import java.sql.SQLException;
 
 /**
  * Core handler for all array types based only on JDBC array types.
+ * Would try to return empty array event for DB null values.
  * Handling logic is similar for any array type.
- * Your subclasses must only provide interrelation between actual java and db types.
- * In a case of multi-dimensional arrays you also have to override
- * {@link ArrayTypeHandler#toEmptyValue(java.lang.Object[])} method.
+ * Your subclasses should provide relation between java and db types,
+ * and cache empty array value of your type.
  *
  * @param <T> Java array type that will be mapped to DB, like Integer[]
  */
-public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
+public abstract class ArrayTypeHandler<T> extends NotNullResultTypeHandler<T> {
 
     /**
      * Should return the SQL name of the type the elements of the array map to.
@@ -53,27 +52,23 @@ public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
     protected abstract String getDbTypeName(Connection connection) throws SQLException;
 
     /**
-     * In a case when you have multi-dimensional array you have to override this method in order
-     * to return correct empty (not null) array value.
+     * You have to override this method in order
+     * to return correct empty n-dimensional array value.
      *
-     * Speaking about PostgreSQL when your int4[][] array is empty it will be stored
-     * as 1 dimensional empty array into DB.
+     * Speaking about PostgreSQL when your int4[][] array is empty
+     * it will be stored as 1 dimensional empty array into DB columnt.
      * Thus it is impossible to cast retrieved array value to Integer[][].
-     *
-     * @param value Acquired from DB array type (should be at least one dimension array).
      *
      * @return n-dimension empty array according to your handler
      */
     @SuppressWarnings("unchecked")
-    protected T toEmptyValue(Object[] value) {
-        return (T)value;
-    }
+    protected abstract T empty();
 
     @SuppressWarnings("unchecked")
     private T fromArray(Array source) {
         try {
             Object[] arr = (Object[])source.getArray();
-            return arr.length == 0 ? toEmptyValue(arr) : (T)arr;
+            return arr.length == 0 ? empty() : (T)arr;
         } catch (SQLException ex) {
             throw new RuntimeException(ex.getMessage(), ex);
         }
@@ -90,7 +85,7 @@ public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
     public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
         Array array = rs.getArray(columnName);
         if (array == null) {
-            return null;
+            return empty();
         }
         return fromArray(array);
     }
@@ -99,7 +94,7 @@ public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
     public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         Array array = rs.getArray(columnIndex);
         if (array == null) {
-            return null;
+            return empty();
         }
         return fromArray(array);
     }
@@ -108,7 +103,7 @@ public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
     public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         Array array = cs.getArray(columnIndex);
         if (array == null) {
-            return null;
+            return empty();
         }
         return fromArray(array);
     }

@@ -36,6 +36,8 @@ import org.apache.ibatis.type.MappedTypes;
 @MappedTypes(String[][].class)
 public class ArrayString2dTypeHandler extends ArrayTypeHandler<String[][]> {
 
+    private static final String[][] EMPTY = new String[0][0];
+
     @Override
     protected String getDbTypeName(Connection connection) throws SQLException {
         String db = connection.getMetaData().getDatabaseProductName();
@@ -43,7 +45,7 @@ public class ArrayString2dTypeHandler extends ArrayTypeHandler<String[][]> {
     }
 
     @Override
-    protected String[][] toEmptyValue(Object[] value) {
-        return new String[0][0];
+    protected String[][] empty() {
+        return EMPTY;
     }
 }

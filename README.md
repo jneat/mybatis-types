@@ -22,6 +22,9 @@ I'm provide support only for PostgreSQL array types.
 Theoretically adding new DB will require only several lines of code, but I do not have time for this. 
 Fell free to contribute if you require new DB support for arrays.
 
+Note that my handlers forced to return not null value (empty array for null db column).
+
+
 ### Java properties and key-value map support
 Underlying concept is simple - any text field can have content in format of properties file. 
 

@@ -33,6 +33,13 @@ import java.sql.Connection;
 @MappedTypes(Integer[].class)
 public class ArrayIntegerTypeHandler extends ArrayTypeHandler<Integer[]> {
 
+    private static final Integer[] EMPTY = new Integer[0];
+
+    @Override
+    protected Integer[] empty() {
+        return EMPTY;
+    }
+
     @Override
     protected String getDbTypeName(Connection connection) {
         // Now support only PostgreSQL types

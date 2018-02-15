@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.jneat'
-version = '0.5'
+version = '0.5.1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

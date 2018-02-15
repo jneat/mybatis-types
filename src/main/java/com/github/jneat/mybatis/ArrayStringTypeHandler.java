@@ -34,6 +34,13 @@ import org.apache.ibatis.type.MappedTypes;
 @MappedTypes(String[].class)
 public class ArrayStringTypeHandler extends ArrayTypeHandler<String[]> {
 
+    private static final String[] EMPTY = new String[0];
+
+    @Override
+    protected String[] empty() {
+        return EMPTY;
+    }
+
     @Override
     protected String getDbTypeName(Connection connection) throws SQLException {
         String db = connection.getMetaData().getDatabaseProductName();

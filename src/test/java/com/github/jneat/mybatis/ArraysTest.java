@@ -33,10 +33,10 @@ public class ArraysTest {
     }
 
     @Test(priority = 1, dataProvider = "shorts")
-    public void numbersGet(long id, Boolean[] booleans) {
+    public void shortsGet(long id, Boolean[] booleans) {
         ArraysRow row = mapper.get(id);
         if (row.getId() % 10 == 0) {
-            assertThat(row.getBooleans()).isNull();
+            assertThat(row.getBooleans()).isEmpty();
         } else {
             assertThat(row.getBooleans()).isEqualTo(booleans);
         }
@@ -66,9 +66,9 @@ public class ArraysTest {
     public void numbersGet(long id, Integer[] ints, Long[] longs, Double[] doubles) {
         ArraysRow row = mapper.get(id);
         if (row.getId() % 10 == 0) {
-            assertThat(row.getIntegers()).isNull();
-            assertThat(row.getLongs()).isNull();
-            assertThat(row.getDoubles()).isNull();
+            assertThat(row.getIntegers()).isEmpty();
+            assertThat(row.getLongs()).isEmpty();
+            assertThat(row.getDoubles()).isEmpty();
         } else {
             assertThat(row.getIntegers()).isEqualTo(ints);
             assertThat(row.getLongs()).isEqualTo(longs);
@@ -98,8 +98,8 @@ public class ArraysTest {
     public void stringsGet(long id, String[] strings, String[][] strings2d) {
         ArraysRow row = mapper.get(id);
         if (row.getId() % 10 == 0) {
-            assertThat(row.getStrings()).isNull();
-            assertThat(row.getStrings2d()).isNull();
+            assertThat(row.getStrings()).isEmpty();
+            assertThat(row.getStrings2d()).isEmpty();
         } else {
             assertThat(row.getStrings()).isEqualTo(strings);
             assertThat(row.getStrings2d()).isEqualTo(strings2d);
