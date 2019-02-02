@@ -1,5 +1,8 @@
 build
+out
 
+*.iml
+.idea
 .gradle
 .nb-gradle-properties
 .nb-gradle
